@@ -4,7 +4,7 @@ PG Reloaded
 PG Reloaded is a simple tool to help developers restore PostgreSQL databases 
 periodically. Useful for databases used for online demos where you
 want to reset the demo data after users have played with your system and also
-for local development where you can schedule your databases to be restored from CSV, JSON data. 
+for local development where you can schedule your databases to be restored from a dump. 
 
 ## Installation
 
@@ -61,8 +61,8 @@ PG Reloaded is configured via YAML configuration file which records the details
 about how and when to restore your databases.
 
 By default `pg_reloaded` reads configuration from a file named `pg_reloaded.yml`
-in the current directory or from file `$HOME/pg_reloaded.yml` iff present.
- (on Windows in `%UserProfile%\pg_reloaded.yml`).
+in the current directory or from file `$HOME/pg_reloaded.yml`
+(on Windows in `%UserProfile%\pg_reloaded.yml`) if present
 
 You can specify a path for the configuration file via the `--config` option
 on the command-line.
@@ -70,20 +70,50 @@ on the command-line.
 The configuration basically looks like the following, add databases:
 
 ```yaml
+# Absolute path to the directory containing postgresql client programs
+# The following client programs are searched for specifically:
+# psql, pg_restore, pg_dump
 psql_path: "/path/to/psql-dir"
+# Absolute path to the logfile, will be created if it does not exist
 log_file: "/path/to/logfile"
 servers:
+  # name - A name to identify the server in the "databases" section
+  #        of the configuration
   - name: "my-development-server"
-    url: "localhost:5432"
+    # port - The host for the database
+    host: "localhost"
+    # port - The port for the database
+    port: 5432
+    # Username for the user must have CREATE DATABASE & DROP DATABASE privileges
     username: "appuser" 
+    # Password for the user role on the database 
     password: "password"
 databases:
+  # name - The database name 
   - name: "my_database_name"
+    # server - The name of a server in the "servers" list
     server: "my-development-server"
+    # schedule - Specifies the schedule for running the database restores in
+    # daemon mode. Supports simple interval notation and CRON expressions
     schedule: "@every 24h"
+    # Source specifies where to get the schema and data to restore  
     source:
-      schema: /path/to/file
-      data: /path/to/file
+      # The type of file(s) to restore the database from.
+      # The following types are (will be) supported:
+      #
+      # * sql - load schema & data from SQL files using psql
+      # * tar - load schema & data from SQL files using pg_restore
+      # * csv - load data from CSV files using pgfutter
+      # * json - load data from JSON files using pgfutter
+      type: "sql"
+      
+      # The absolute path to the file to restore the database from 
+      file: "/path/to/file"
+      
+      # The absolute path to the schema file to be used to create tables, functions etc..
+      # Schema MUST be specified if source type is one of: csv, json 
+      # or if the SQL file only contains data
+      schema: "/path/to/schema/file.sql"
 ```
 
 ### Supported notation for Scheduling
@@ -98,13 +128,13 @@ hours (`h`) and days (`d`).
 
 e.g. `@every 10m`, `@every 2h`, `@every 7d`, `@every 30d`
 
-* CRON Expression: A CRON expression valid [here](http://crontab.guru) is valid
+* CRON Expression: Most CRON expressions valid [here](http://crontab.guru) are valid
 
 
-## Pre-requisites
+## Prerequisites
 
 * The postgresql client programs must be present on your path or configured in 
-the config file or command-line for `pg_reload` to work. In particular the 
+the config file or command-line for `pg_reloaded` to work. In particular the 
 program may to execute `psql`, `pg_restore`, `pg_dump` during it's operation.
 
 In the YAML file:
@@ -121,21 +151,34 @@ $ pg_reloaded --psql-path="/path/to/psql-dir"
 
 ### Supported Sources
 
-* *SQL file* - default source, load dumps/data files from the filesystem
+Currently, the only supported sources are:
+
+* *SQL* via dumped *SQL file* - default source, load dumps/data files from the filesystem
 
 ## Building from Source
 
+I encourage you to build pg_reloaded from source, if only to get you to try out
+Go ;). So the first step is to Install Go.
+
+The next step is to clone the repo and then after that, building the binary _should_
+be as simple as running `go build`
+
+```sh
+$ git clone https://github.com/zikani03/pg_reloaded.git
+$ cd pg_reloaded
+$ go build
+```
+
 ### Dependencies
 
-Could not be possible without these great libraries and tools
+This project could not be made possible without these great Open-Source 
+tools and their authors/contributors whose shoulders are steady enough to stand on:
 
-* Go 1.12.x
-* postgresql (Ofcourse!)
-* psql
-* jobber
-* viper
-* pgclimb
-* pgfutter
+* [Go 1.11.x](https://golang.org)
+* [Postgresql (Ofcourse!)](https://postgresql.org)
+* [cobra](https://github.com/spf13/cobra)
+* [viper](https://github.com/spf13/viper)
+* The [cron](./cron) package is copied from [dkron](https://github.com/victorcoder/dkron/master/cron)
 
 ## CHENJEZO ( *Notice* )
 
@@ -153,6 +196,8 @@ can be dropped and restored without losing a dime. Use good judgment.
 
 
 ## ROADMAP
+
+Some rough ideas on how to take this thing further:
 
 * Add preload and post-load conditions for databases
 
@@ -180,7 +225,7 @@ Issues and Pull Requests welcome.
 
 ## License
 
-Apache License 2.0
+MIT License
 
 ---
 
