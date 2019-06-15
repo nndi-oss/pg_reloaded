@@ -1,0 +1,52 @@
+# Absolute path to the directory containing postgresql client programs
+# The following client programs are searched for specifically:
+# psql, pg_restore, pg_dump
+psql_path: "/path/to/psql-dir"
+# Absolute path to the logfile, will be created if it does not exist
+log_file: "/path/to/logfile"
+servers:
+  # name - A name to identify the server in the "databases" section
+  #        of the configuration
+  - name: "my-development-server"
+    # port - The host for the database
+    host: "localhost"
+    # port - The port for the database
+    port: 5432
+    # Username for the user must have CREATE DATABASE & DROP DATABASE privileges
+    username: "appuser" 
+    # Password for the user role on the database 
+    password: "password"
+databases:
+  # name - The database name 
+  - name: "my_database_name"
+    # server - The name of a server in the "servers" list
+    server: "my-development-server"
+    # schedule - Specifies the schedule for running the database restores in
+    # daemon mode. Supports simple interval notation and CRON expressions
+    schedule: "@every 24h"
+    # Source specifies where to get the schema and data to restore  
+    source:
+      # The type of file(s) to restore the database from.
+      # The following types are (will be) supported:
+      #
+      # * sql - load schema & data from SQL files using psql
+      # * tar - load schema & data from SQL files using pg_restore
+      # * csv - load data from CSV files using pgfutter
+      # * json - load data from JSON files using pgfutter
+      type: "sql"
+      
+      # The absolute path to the file to restore the database from 
+      file: "/path/to/file"
+      
+      # The absolute path to the schema file to be used to create tables, functions etc..
+      # Schema MUST be specified if source type is one of: csv, json 
+      # or if the SQL file only contains data
+      schema: "/path/to/schema/file.sql"
+
+      # The files to load data from
+      # MUST be specified if source type is one of: csv, json
+      files:
+        - "/path/to/file1.json"
+        - "/path/to/file2.json"
+      # - ...
+        - "/path/to/file99.json"
