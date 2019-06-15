@@ -178,7 +178,7 @@ tools and their authors/contributors whose shoulders are steady enough to stand 
 * [Postgresql (Ofcourse!)](https://postgresql.org)
 * [cobra](https://github.com/spf13/cobra)
 * [viper](https://github.com/spf13/viper)
-* The [cron](./cron) package is copied from [dkron](https://github.com/victorcoder/dkron/master/cron)
+* The [cron](./cron) package is copied from [dkron](https://github.com/victorcoder/dkron/tree/master/cron)
 
 ## CHENJEZO ( *Notice* )
 
