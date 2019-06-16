@@ -3,6 +3,7 @@ package pg_reloaded
 import (
 	"errors"
 	"fmt"
+	"github.com/hashicorp/go-hclog"
 	"os"
 	"os/exec"
 	"path"
@@ -17,15 +18,15 @@ func RunRestoreDatabase(psqlDir, username, database, host string, port int, file
 	cmd := exec.Command(command(psqlDir, "psql"), args...)
 	// cmd.Dir = db.Source.GetDir()
 	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
-	// appLogger.Debug("Dropping database.",
-	// 	"username", username,
-	// 	"database", database)
+	hclog.Default().Debug("Restoring database.",
+		"username", username,
+		"database", database)
 	output, err := cmd.CombinedOutput()
 	fmt.Println(string(output))
 	if err != nil || !cmd.ProcessState.Success() {
-		// appLogger.Error("Failed to run 'pg_restore'.",
-		// 	"error", err,
-		// 	"output", string(output))
+		hclog.Default().Error("Failed to run 'pg_restore'.",
+			"error", err,
+			"output", string(output))
 		return err
 	}
 	return RunPsql(psqlDir, username, database, host, port, file, password)
@@ -39,17 +40,17 @@ func RunDropDatabase(psqlDir, username, database, host string, port int, passwor
 	args := dropDatabaseArgs(username, database, host, port) 
 	fmt.Println("Running", command(psqlDir, "psql"), args)
 	cmd := exec.Command(command(psqlDir, "psql"), args...)
-	// cmd.Dir = db.Source.GetDir()
+
 	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
-	// appLogger.Debug("Dropping database.",
-	// 	"username", username,
-	// 	"database", database)
+	hclog.Default().Debug("Dropping database.",
+		"username", username,
+		"database", database)
 	output, err := cmd.CombinedOutput()
 	fmt.Println(string(output))
 	if err != nil || !cmd.ProcessState.Success() {
-		// appLogger.Error("Failed to run 'pg_restore'.",
-		// 	"error", err,
-		// 	"output", string(output))
+		hclog.Default().Error("Failed to run 'pg_restore'.",
+			"error", err,
+			"output", string(output))
 		return err
 	}
 
@@ -61,17 +62,17 @@ func RunPgRestore(psqlDir, username, database, host string, port int, file, pass
 	args := append(psqlArgs(username, database, host, port), file)
 	fmt.Println("Running", command(psqlDir, "pg_restore"), args)
 	cmd := exec.Command(command(psqlDir, "pg_restore"), args...)
-	// cmd.Dir = db.Source.GetDir()
+
 	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
-	// appLogger.Info("Running restore via pg_restore.",
-	// 	"database", database,
-	// 	"file", file,
-	// 	"username", username)
+	hclog.Default().Debug("Running restore via pg_restore.",
+		"database", database,
+		"file", file,
+		"username", username)
 	output, err := cmd.CombinedOutput()
 	fmt.Println(string(output))
 	if err != nil || !cmd.ProcessState.Success() {
-		// appLogger.Error("Failed to run 'pg_restore'.",
-		// 	"error", err, "output", string(output))
+		hclog.Default().Error("Failed to run 'pg_restore'.",
+			"error", err, "output", string(output))
 		return err
 	}
 
@@ -85,15 +86,15 @@ func RunPsql(psqlDir, username, database, host string, port int, file, password 
 	cmd := exec.Command(command(psqlDir, "psql"), args...)
 	// cmd.Dir = db.Source.GetDir()
 	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
-	// appLogger.Info("Running restore via psql.",
-	// 	"database", database,
-	// 	"file", file,
-	// 	"username", username)
+	hclog.Default().Debug("Running restore via psql.",
+		"database", database,
+		"file", file,
+		"username", username)
 	output, err := cmd.CombinedOutput()
 	fmt.Println(string(output))
 	if err != nil || !cmd.ProcessState.Success() {
-		// appLogger.Error("Failed to run 'psql'.",
-		// 	"error", err, "output", string(output))
+		hclog.Default().Error("Failed to run 'psql'.",
+			"error", err, "output", string(output))
 		return err
 	}
 

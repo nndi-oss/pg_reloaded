@@ -2,15 +2,18 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/hashicorp/go-hclog"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/zikani03/pg_reloaded/pg_reloaded"
 	"os"
+	"path"
 )
 
 var cfgFile string
 var config = &pg_reloaded.Config{}
+var logger hclog.Logger
 var psqlPath string
 var logFile string
 
@@ -26,6 +29,7 @@ func init() {
 }
 
 func initConfig() {
+	var home string
 	// Don't forget to read config either from cfgFile or from home directory!
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -53,6 +57,15 @@ func initConfig() {
 		fmt.Println("Can't read config:", err)
 		os.Exit(1)
 	}
+
+	logpath := path.Join(home, "pg_reloaded.log")
+	if config.LogPath != "" {
+		logpath = path.Join(config.LogPath, "pg_reloaded.log")
+	}
+	logger = hclog.New(&hclog.LoggerOptions{
+		Name:  logpath,
+		Level: hclog.LevelFromString("DEBUG"),
+	})
 }
 
 var rootCmd = &cobra.Command{
