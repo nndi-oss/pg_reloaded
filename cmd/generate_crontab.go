@@ -1,5 +1,5 @@
 package cmd
-
+// Generate CRON Tab from the configuration
 import (
 	"fmt"
 	"github.com/spf13/cobra"
@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(generateCrontabCmd)
+	// TODO: rootCmd.AddCommand(generateCrontabCmd)
 }
 
 var cronTemplate = "%s \t %s"
