@@ -13,6 +13,8 @@ servers:
     # port - The port for the database
     port: 5432
     # Username for the user must have CREATE DATABASE & DROP DATABASE privileges
+    # Use the following to grant create privileges 
+    # `ALTER USER username CREATEDB;`
     username: "appuser" 
     # Password for the user role on the database 
     password: "password"
