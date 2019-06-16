@@ -1,4 +1,7 @@
 /.vscode/
 /build/
+/dist/
 /vendor/
 development.yml
+*.exe
+test-db

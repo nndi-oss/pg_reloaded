@@ -12,20 +12,7 @@ Currently, you will have to build it from source, binary Releases will be made a
 
 ## Usage
 
-In order to be effective, `pg_reloaded` needs to run in the background as a daemon.
-There's a sample [Systemd Unit File here](./config/pg_reloaded.service).
-
-You can also use supervisor to run the `pg_reloaded` daemon, below is an example
-configuration for [Supervisor](https://github.com/supervisor/supervisor)
-
-```ini
-[program:pg_reloaded]
-command=/usr/bin/pg_reloaded start --config=/etc/pg_reloaded/pg_reloaded.yml
-```
-Please note that these process management systems must be configured to 
-start pg_reloaded on boot for best effective use of the scheduling capabilities.
-
-**Example**
+Get the usage information by running `pg_reloaded --help`
 
 ```sh
 $ pg_reloaded check --config="pg_reloaded.yml"
@@ -43,9 +30,19 @@ If you would like to restore a database immediately, run the following:
 $ pg_reloaded run "database"
 ```
 
-**Usage**
+In order to be effective, `pg_reloaded` needs to run in the background as a daemon.
+There's a sample [Systemd Unit File here](./config/pg_reloaded.service).
 
-Get the usage information by running `pg_reloaded --help`
+You can also use supervisor to run the `pg_reloaded` daemon, below is an example
+configuration for [Supervisor](https://github.com/supervisor/supervisor)
+
+```ini
+[program:pg_reloaded]
+command=/usr/bin/pg_reloaded start --config=/etc/pg_reloaded/pg_reloaded.yml
+```
+
+Please note that these process management systems must be configured to 
+start pg_reloaded on boot for best effective use of the scheduling capabilities.
 
 ## Example configuration
 
