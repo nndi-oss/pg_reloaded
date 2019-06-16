@@ -26,16 +26,16 @@ command=/usr/bin/pg_reloaded start --config=/etc/pg_reloaded/pg_reloaded.yml
 Please note that these process management systems must be configured to 
 start pg_reloaded on boot for best effective use of the scheduling capabilities.
 
-You can also run the pg_reloaded binary in the background by adding the `--daemonize` flag.
-
 **Example**
 
 ```sh
 $ pg_reloaded check --config="pg_reloaded.yml"
+
+# Run with the default configuration
 $ pg_reloaded start
 
 # Or with a path to a configuration file
-$ pg_reloaded start --daemonize --config="development.yml" --log-file="./path/to/log"
+$ pg_reloaded start --config="development.yml" --log-file="./path/to/log"
 ```
 
 If you would like to restore a database immediately, run the following:
@@ -182,10 +182,10 @@ tools and their authors/contributors whose shoulders are steady enough to stand 
 
 ## CHENJEZO ( *Notice* )
 
-- **Running as a daemon on Windows**
+- **Running as a Service on Windows**
 
 Since you have to run it in the background for the scheduling functionality to be
-of any value a service would be ideal on Windows - but until then you will have 
+of any value a Service wrapper would be ideal on Windows - but until then you will have 
 to run it in the foreground.
 
 - **BE CAREFULL, IT MAY EAT YOUR LUNCH!**
