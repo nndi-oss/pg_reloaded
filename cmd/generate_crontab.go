@@ -41,6 +41,7 @@ func generateCrontab(args ...string) {
 		)
 		server := config.GetServerByName(d.Server)
 		cmdStr := pg_reloaded.DropAndRestoreUsingPsql(
+			config.PsqlDir,
 			server.Username,
 			d.Name, 
 			server.Host,

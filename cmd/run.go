@@ -50,7 +50,7 @@ var runCmd = &cobra.Command{
 			dbName,
 			host,
 			port,
-			password
+			password,
 		)
 		if err != nil {
 			fmt.Printf("Failed to drop database. Got %v", err)
@@ -64,7 +64,7 @@ var runCmd = &cobra.Command{
 			host,
 			port,
 			sourceFile,
-			password
+			password,
 		)
 		if err != nil {
 			fmt.Printf("Failed to restore database. Got %v", err)

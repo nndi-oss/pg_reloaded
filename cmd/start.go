@@ -46,7 +46,7 @@ func createJobsFromConfiguration(cronScheduler *cron.Cron) error {
 					db.Name,
 					server.Host,
 					server.Port,
-					password
+					password,
 				)
 				pg_reloaded.RunRestoreDatabase(
 					config.PsqlDir,
@@ -55,7 +55,7 @@ func createJobsFromConfiguration(cronScheduler *cron.Cron) error {
 					server.Host,
 					server.Port,
 					db.Source.File,
-					password
+					password,
 				)
 			}
 			// TODO: create schema first: RunPsql(username, db.Name, server.Host, server.Port, db.Source.File, password)

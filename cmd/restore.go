@@ -51,7 +51,7 @@ var restoreCmd = &cobra.Command{
 			host,
 			port,
 			sourceFile,
-			password
+			password,
 		)
 		if err != nil {
 			fmt.Printf("Failed to restore database. Got %v", err)

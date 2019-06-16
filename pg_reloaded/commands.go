@@ -28,7 +28,7 @@ func RunRestoreDatabase(psqlDir, username, database, host string, port int, file
 		// 	"output", string(output))
 		return err
 	}
-	return RunPsql(username, database, host, port, file, password)
+	return RunPsql(psqlDir, username, database, host, port, file, password)
 }
 
 // RunDropDatabase Executes a DROP DATABASE via psql
@@ -131,11 +131,11 @@ func command(dir, commandName string) string {
 	if dir == "" {
 		return commandName
 	}
-	return path.join(dir, commandName)
+	return path.Join(dir, commandName)
 }
 
 // DropAndRestoreUsingPsql Creates a command-line to drop a database and restore via Psql
-func DropAndRestoreUsingPsql(username, database, host string, port int, file, password string) string {
+func DropAndRestoreUsingPsql(psqlDir, username, database, host string, port int, file, password string) string {
 	return fmt.Sprintf("psql X && psql Y %s", "yellow")
 	//return fmt.Sprintf("psql %s && psql %s < %s",
 	//	dropDatabaseArgs(username, database, host, port),
