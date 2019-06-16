@@ -1,8 +1,8 @@
 PG Reloaded
 ===
 
-PG Reloaded is a simple tool to help developers restore PostgreSQL databases 
-periodically. Useful for databases used for online demos where you
+`pg_reloaded` is a simple command-line tool to help developers restore PostgreSQL databases 
+periodically. It's useful for restoring databases used for online demos where you
 want to reset the demo data after users have played with your system and also
 for local development where you can schedule your databases to be restored from a dump. 
 
@@ -41,13 +41,6 @@ If you would like to restore a database immediately, run the following:
 
 ```sh
 $ pg_reloaded run "database"
-```
-
-You can also override the user, host and port from the configuration by passing
-the arguments on the command-line.
-
-```sh 
-$ pg_reloaded run "database" --username="postgres" --host="remote-server" --port=15432 
 ```
 
 **Usage**
@@ -173,7 +166,7 @@ $ go build
 This project could not be made possible without these great Open-Source 
 tools and their authors/contributors whose shoulders are steady enough to stand on:
 
-* [Go 1.11.x](https://golang.org)
+* [Go 1.12.x](https://golang.org)
 * [Postgresql (Ofcourse!)](https://postgresql.org)
 * [cobra](https://github.com/spf13/cobra)
 * [viper](https://github.com/spf13/viper)
