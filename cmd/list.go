@@ -15,15 +15,22 @@ var listCmd = &cobra.Command{
 	Long:  `Lists the configured servers and databases`,
 	Run: func(cmd *cobra.Command, args []string) {
 		
-		fmt.Println("Servers:\n===========================")
+		fmt.Println("Servers:")
+		fmt.Println("===========================")
 		for _, s := range config.Servers {
-			fmt.Printf("Name: %s,\nHost: %s,\nPort: %s", s.Name, s.Host, s.Port)
+			fmt.Println("Name: ", s.Name)
+			fmt.Println("Host: ", s.Host)
+			fmt.Println("Port: ", s.Port)
+			fmt.Println("Username: ", s.Username)
 		}
-		
-		fmt.Println("Databases:\n===========================")
+		fmt.Println("\n")
+		fmt.Println("Databases:")
+		fmt.Println("===========================")
 		for _, d := range config.Databases {
-			fmt.Printf("Name: %s,\nSchedule: %s,\nServer: %s,\nSource: %s",
-				d.Name, d.Schedule, d.Server, d.Source.File)
+			fmt.Println("Name:", d.Name)
+			fmt.Println("Schedule:", d.Schedule)
+			fmt.Println("Server:", d.Server)
+			fmt.Println("Source:", d.Source.File)
 		}
 		fmt.Println("\n\ndone.")
 	},
