@@ -4,6 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/zikani03/pg_reloaded/cron"
+	"os"
+	"regexp"
+	"strings"
 )
 
 // Config stores all the configuration information for pg_reloaded
@@ -49,15 +52,17 @@ func (c Config) GetServerByName(name string) *ServerConfig {
 }
 
 func Validate(cfg Config) error {
-	if cfg.PsqlDir == "" {
-		return errors.New("psql-path must be specified")
+	if cfg.PsqlDir != "" {
+		if _, err := os.Stat(cfg.PsqlDir); os.IsNotExist(err) {
+			return errors.New(fmt.Sprintf("The path for Postgresql clients (psql_path) '%s' does not exist or cannot be read", cfg.PsqlDir))
+		}
 	}
 
-	if cfg.Servers == nil {
+	if cfg.Servers == nil || len(cfg.Servers) < 1 {
 		return errors.New("Please specify atleast one server under 'server' must be specified")
 	}
 
-	if cfg.Databases == nil {
+	if cfg.Databases == nil || len(cfg.Databases) < 1 {
 		return errors.New("Please specify atleast one database under 'databases' must be specified")
 	}
 	for idx, d := range cfg.Databases {
@@ -76,6 +81,32 @@ func Validate(cfg Config) error {
 		if _, err := cron.Parse(d.Schedule); err != nil {
 			return errors.New(fmt.Sprintf("Invalid expression for 'schedule' for database '%s'. Error: %v", d.Name, err))
 		}
+		stype := strings.ToLower(d.Source.Type)
+
+		matched, err := regexp.MatchString("sql|tar", stype)
+		if err != nil {
+			return err
+		}
+		// TODO: Add conditions when CSV and JSON are supported || stype != "csv" || stype != "json"
+		if !matched {
+			return errors.New(fmt.Sprintf("Provided source type '%s' is not supported for database '%s'.", d.Source.Type, d.Name))
+		} else {
+			if _, err := os.Stat(d.Source.File); os.IsNotExist(err) {
+				return errors.New(fmt.Sprintf("File '%s' does not exist. File must be provided for source type '%s' for database '%s'.", d.Source.File, d.Source.Type, d.Name))
+			}
+		}
+
+		// TODO: Check configuration for CSV and JSON source types i.e. d.Source.Schema, d.Source.Files
+		// if stype == "csv" || stype == "json"  {
+		// if _, err := os.Stat(d.Source.Schema); os.IsNotExist(err) {
+		//		return errors.New(fmt.Sprintf("Schema File '%s' does not exist - a schema must be provided for source type '%s' for database '%s'.", d.Source.Schema, d.Source.Type, d.Name))
+		//	}
+		//  for _, file := range d.Source.Files {
+		// 	    if _, err := os.Stat(d.Source.File); os.IsNotExist(err) {
+		// 		    return errors.New(fmt.Sprintf("File '%s' does not exist. File must be provided for source type '%s' for database '%s'.", d.Source.File, d.Source.Type, d.Name))
+		// 	    }
+		//   }
+		// }
 	}
 	return nil
 }
