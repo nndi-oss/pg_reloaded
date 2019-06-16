@@ -8,8 +8,7 @@ for local development where you can schedule your databases to be restored from 
 
 ## Installation
 
-Download a binary from the Releases page.
-If you would like to build from source, see below.
+Currently, you will have to build it from source, binary Releases will be made available soon;
 
 ## Usage
 
