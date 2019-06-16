@@ -8,6 +8,7 @@ import (
 )
 
 var scheduler = cron.New()
+var shutdownCh chan (struct{})
 
 func init() {
 	rootCmd.AddCommand(startCmd)
@@ -17,9 +18,17 @@ var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Starts the PG Reloaded scheduler/cron daemon",
 	Long:  `Starts the PG Reloaded scheduler/cron daemon`,
-	Run: func(cmd *cobra.Command, args []string) {
-		createJobsFromConfiguration(scheduler)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if err := createJobsFromConfiguration(scheduler); err != nil {
+			return err
+		}
+		
 		scheduler.Start()
+		select {
+			// TODO: handle signals case s := <-signalCh:
+		case <-shutdownCh:
+			return nil
+		}
 	},
 }
 
