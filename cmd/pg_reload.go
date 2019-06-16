@@ -1,14 +1,16 @@
 package cmd
 
 import (
+	"fmt"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/zikani03/pg_reloaded/pg_reloaded"
 	"os"
 )
 
 var cfgFile string
-var config = &Config{}
+var config = &pg_reloaded.Config{}
 var psqlPath string
 var logFile string
 
@@ -60,9 +62,13 @@ var rootCmd = &cobra.Command{
 		    for use for development and demo databases.
 			More info: https://github.com/zikani03/pg_reloaded`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if err := Validate(config); err != nil {
+		if err := pg_reloaded.Validate(*config); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 	},
+}
+
+func Execute() error {
+	return rootCmd.Execute()
 }

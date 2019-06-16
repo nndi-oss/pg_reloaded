@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	homedir "github.com/mitchellh/go-homedir"
+	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	"github.com/zikani03/pg_reloaded/pg_reloaded"
 	"os"
 )
 
@@ -21,35 +21,36 @@ var runCmd = &cobra.Command{
 	Long:  `Run an immediate restore for a specific database`,
 	Run: func(cmd *cobra.Command, args []string) {
 		dbName := args[0]
-		var database DataseConfig
+		var database pg_reloaded.DatabaseConfig
+		var found bool = false
 		for _, d := range config.Databases {
 			if dbName == d.Name {
 				database = d
+				found = true
 				break
 			}
 		}
-		if database == nil {
+		if !found {
 			fmt.Println("Invalid database specified. Run 'pg_reload list' to see configured databases")
 			os.Exit(1)
 			return
 		}
 
-		server = config.GetServerByName(database.Server)
+		server := config.GetServerByName(database.Server)
 
 		host := server.Host
-		if 
 		username := server.Username
 		password := server.Password
 		port := 5432
 		sourceFile := database.Source.File
 
-		err = RunDropDatabase(username, dbName, host, port, password)
+		err := pg_reloaded.RunDropDatabase(username, dbName, host, port, password)
 		if err != nil {
 			fmt.Println("Failed to drop database", err)
 			os.Exit(1)
 			return
 		}
-		err = RunPsql(username, dbName, host, port, sourceFile, password)
+		err = pg_reloaded.RunPsql(username, dbName, host, port, sourceFile, password)
 		if err != nil {
 			fmt.Println("Failed to restore database", err)
 			os.Exit(1)
