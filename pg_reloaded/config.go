@@ -83,7 +83,7 @@ func Validate(cfg Config) error {
 		}
 		stype := strings.ToLower(d.Source.Type)
 
-		matched, err := regexp.MatchString("sql|tar", stype)
+		matched, err := regexp.MatchString("^(sql|tar)$", stype)
 		if err != nil {
 			return err
 		}
