@@ -7,20 +7,44 @@ import (
 	"os/exec"
 )
 
+func RunRestoreDatabase(username, database, host string, port int, file, password string) error {
+	if "postgres" == database {
+		return errors.New("Nope, I cannot CREATE the 'postgres' database.")
+	}
+	args := createDatabaseArgs(username, database, host, port) 
+	fmt.Println("Running", "psql", args)
+	cmd := exec.Command("psql", args...)
+	// cmd.Dir = db.Source.GetDir()
+	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
+	// appLogger.Debug("Dropping database.",
+	// 	"username", username,
+	// 	"database", database)
+	output, err := cmd.CombinedOutput()
+	fmt.Println(string(output))
+	if err != nil || !cmd.ProcessState.Success() {
+		// appLogger.Error("Failed to run 'pg_restore'.",
+		// 	"error", err,
+		// 	"output", string(output))
+		return err
+	}
+	return RunPsql(username, database, host, port, file, password)
+}
+
 // RunDropDatabase Executes a DROP DATABASE via psql
 func RunDropDatabase(username, database, host string, port int, password string) error {
 	if "postgres" == database {
 		return errors.New("Nope, I cannot DROP the 'postgres' database.")
 	}
-	cmd := exec.Command("psql",
-		dropDatabaseArgs(username, database, host, port))
+	args := dropDatabaseArgs(username, database, host, port) 
+	fmt.Println("Running", "psql", args)
+	cmd := exec.Command("psql", args...)
 	// cmd.Dir = db.Source.GetDir()
-	cmd.Env = append(os.Environ(), fmt.Sprintf("PG_PASS=%s", password))
+	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
 	// appLogger.Debug("Dropping database.",
 	// 	"username", username,
 	// 	"database", database)
 	output, err := cmd.CombinedOutput()
-	fmt.Println(output)
+	fmt.Println(string(output))
 	if err != nil || !cmd.ProcessState.Success() {
 		// appLogger.Error("Failed to run 'pg_restore'.",
 		// 	"error", err,
@@ -33,16 +57,17 @@ func RunDropDatabase(username, database, host string, port int, password string)
 
 // RunPgRestore Executes a database restore using pg_restore
 func RunPgRestore(username, database, host string, port int, file, password string) error {
-	cmd := exec.Command("pg_restore",
-		fmt.Sprintf("%s %s", psqlArgs(username, database, host, port), file))
+	args := append(psqlArgs(username, database, host, port), file)
+	fmt.Println("Running", "pg_restore", args)
+	cmd := exec.Command("pg_restore", args...)
 	// cmd.Dir = db.Source.GetDir()
-	cmd.Env = append(os.Environ(), fmt.Sprintf("PG_PASS=%s", password))
+	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
 	// appLogger.Info("Running restore via pg_restore.",
 	// 	"database", database,
 	// 	"file", file,
 	// 	"username", username)
 	output, err := cmd.CombinedOutput()
-	fmt.Println(output)
+	fmt.Println(string(output))
 	if err != nil || !cmd.ProcessState.Success() {
 		// appLogger.Error("Failed to run 'pg_restore'.",
 		// 	"error", err, "output", string(output))
@@ -54,16 +79,17 @@ func RunPgRestore(username, database, host string, port int, file, password stri
 
 // RunPsql Executes a command using psql
 func RunPsql(username, database, host string, port int, file, password string) error {
-	cmd := exec.Command("psql",
-		fmt.Sprintf("%s < %s", psqlArgs(username, database, host, port), file))
+	args := append(psqlArgs(username, database, host, port), "-f", file)
+	fmt.Println("Running", "psql", args)
+	cmd := exec.Command("psql", args...)
 	// cmd.Dir = db.Source.GetDir()
-	cmd.Env = append(os.Environ(), fmt.Sprintf("PG_PASS=%s", password))
+	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
 	// appLogger.Info("Running restore via psql.",
 	// 	"database", database,
 	// 	"file", file,
 	// 	"username", username)
 	output, err := cmd.CombinedOutput()
-	fmt.Println(output)
+	fmt.Println(string(output))
 	if err != nil || !cmd.ProcessState.Success() {
 		// appLogger.Error("Failed to run 'psql'.",
 		// 	"error", err, "output", string(output))
@@ -73,23 +99,38 @@ func RunPsql(username, database, host string, port int, file, password string) e
 	return nil
 }
 
-// dropDatabaseArgs Creates an argument string for passing to psql to drop a database
-func dropDatabaseArgs(username, database, host string, port int) string {
-	return fmt.Sprintf("%s -c \"DROP DATABASE %s\"",
-		psqlArgs(username, "postgres", host, port), database)
+// createDatabaseArgs Creates an argument string for passing to psql to CREATE a database
+func createDatabaseArgs(username, database, host string, port int) []string {
+	return append(
+		psqlArgs(username, "postgres", host, port),
+		"-c", fmt.Sprintf("CREATE DATABASE %s OWNER %s", database, username))
+}
+
+// dropDatabaseArgs Creates an argument string for passing to psql to DROP a database
+func dropDatabaseArgs(username, database, host string, port int) []string {
+	return append(
+		psqlArgs(username, "postgres", host, port),
+		"-c", fmt.Sprintf("DROP DATABASE %s", database))
 }
 
 // psqlArgs Creates an argument string for passing to Postgresql clients
-func psqlArgs(username, database, host string, port int) string {
-	return fmt.Sprintf("-U \"%s\" -d \"%s\" -h \"%s\" -p %d",
-		username, database, host, port)
+func psqlArgs(username, database, host string, port int) []string {
+	args := []string{
+		"-U", username,
+		"-h", host,
+		"-p", fmt.Sprintf("%d", port),
+		"-d", database,
+	}
+
+	return args
 }
 
 // DropAndRestoreUsingPsql Creates a command-line to drop a database and restore via Psql
 func DropAndRestoreUsingPsql(username, database, host string, port int, file, password string) string {
-	return fmt.Sprintf("psql %s && psql %s < %s",
-		dropDatabaseArgs(username, database, host, port),
-		psqlArgs(username, database, host, port),
-		file,
-	)
+	return fmt.Sprintf("psql X && psql Y %s", "yellow")
+	//return fmt.Sprintf("psql %s && psql %s < %s",
+	//	dropDatabaseArgs(username, database, host, port),
+	//	psqlArgs(username, database, host, port),
+	//	file,
+	//)
 }

@@ -32,7 +32,7 @@ func createJobsFromConfiguration(cronScheduler *cron.Cron) error {
 		err := cronScheduler.AddFunc(db.Schedule, func() {
 			if db.Source.Type == "sql" {
 				pg_reloaded.RunDropDatabase(username, db.Name, server.Host, server.Port, password)
-				pg_reloaded.RunPsql(username, db.Name, server.Host, server.Port, db.Source.File, password)
+				pg_reloaded.RunRestoreDatabase(username, db.Name, server.Host, server.Port, db.Source.File, password)
 			}
 			// TODO: create schema first: RunPsql(username, db.Name, server.Host, server.Port, db.Source.File, password)
 			// TODO: insert data: RunPsql(username, db.Name, server.Host, server.Port, db.Source.File, password)

@@ -8,9 +8,9 @@ import (
 )
 
 func init() {
-	runCmd.Flags().StringP("username", "u", "postgres", "Override the postgres user (default: postgres)")
-	runCmd.Flags().StringP("host", "h", "localhost", "Override the server host (default: localhost)")
-	runCmd.Flags().StringP("port", "p", "5432", "Override the server port (default: 5432)")
+	// runCmd.Flags().StringP("username", "u", "postgres", "Override the postgres user (default: postgres)")
+	// runCmd.Flags().StringP("host", "h", "localhost", "Override the server host (default: localhost)")
+	// runCmd.Flags().StringP("port", "p", "5432", "Override the server port (default: 5432)")
 
 	rootCmd.AddCommand(runCmd)
 }
@@ -41,18 +41,18 @@ var runCmd = &cobra.Command{
 		host := server.Host
 		username := server.Username
 		password := server.Password
-		port := 5432
+		port := server.Port
 		sourceFile := database.Source.File
 
 		err := pg_reloaded.RunDropDatabase(username, dbName, host, port, password)
 		if err != nil {
-			fmt.Println("Failed to drop database", err)
+			fmt.Printf("Failed to drop database. Got %v", err)
 			os.Exit(1)
 			return
 		}
-		err = pg_reloaded.RunPsql(username, dbName, host, port, sourceFile, password)
+		err = pg_reloaded.RunRestoreDatabase(username, dbName, host, port, sourceFile, password)
 		if err != nil {
-			fmt.Println("Failed to restore database", err)
+			fmt.Printf("Failed to restore database. Got %v", err)
 			os.Exit(1)
 			return
 		}
