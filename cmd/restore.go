@@ -44,7 +44,15 @@ var restoreCmd = &cobra.Command{
 		port := server.Port
 		sourceFile := database.Source.File
 
-		err := pg_reloaded.RunRestoreDatabase(username, dbName, host, port, sourceFile, password)
+		err := pg_reloaded.RunRestoreDatabase(
+			config.PsqlDir,
+			username,
+			dbName,
+			host,
+			port,
+			sourceFile,
+			password
+		)
 		if err != nil {
 			fmt.Printf("Failed to restore database. Got %v", err)
 			os.Exit(1)

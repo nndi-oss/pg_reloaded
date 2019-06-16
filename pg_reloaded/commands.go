@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 )
 
-func RunRestoreDatabase(username, database, host string, port int, file, password string) error {
+func RunRestoreDatabase(psqlDir, username, database, host string, port int, file, password string) error {
 	if "postgres" == database {
 		return errors.New("Nope, I cannot CREATE the 'postgres' database.")
 	}
 	args := createDatabaseArgs(username, database, host, port) 
-	fmt.Println("Running", "psql", args)
-	cmd := exec.Command("psql", args...)
+	fmt.Println("Running", command(psqlDir, "psql"), args)
+	cmd := exec.Command(command(psqlDir, "psql"), args...)
 	// cmd.Dir = db.Source.GetDir()
 	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
 	// appLogger.Debug("Dropping database.",
@@ -31,13 +32,13 @@ func RunRestoreDatabase(username, database, host string, port int, file, passwor
 }
 
 // RunDropDatabase Executes a DROP DATABASE via psql
-func RunDropDatabase(username, database, host string, port int, password string) error {
+func RunDropDatabase(psqlDir, username, database, host string, port int, password string) error {
 	if "postgres" == database {
 		return errors.New("Nope, I cannot DROP the 'postgres' database.")
 	}
 	args := dropDatabaseArgs(username, database, host, port) 
-	fmt.Println("Running", "psql", args)
-	cmd := exec.Command("psql", args...)
+	fmt.Println("Running", command(psqlDir, "psql"), args)
+	cmd := exec.Command(command(psqlDir, "psql"), args...)
 	// cmd.Dir = db.Source.GetDir()
 	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
 	// appLogger.Debug("Dropping database.",
@@ -56,10 +57,10 @@ func RunDropDatabase(username, database, host string, port int, password string)
 }
 
 // RunPgRestore Executes a database restore using pg_restore
-func RunPgRestore(username, database, host string, port int, file, password string) error {
+func RunPgRestore(psqlDir, username, database, host string, port int, file, password string) error {
 	args := append(psqlArgs(username, database, host, port), file)
-	fmt.Println("Running", "pg_restore", args)
-	cmd := exec.Command("pg_restore", args...)
+	fmt.Println("Running", command(psqlDir, "pg_restore"), args)
+	cmd := exec.Command(command(psqlDir, "pg_restore"), args...)
 	// cmd.Dir = db.Source.GetDir()
 	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
 	// appLogger.Info("Running restore via pg_restore.",
@@ -78,10 +79,10 @@ func RunPgRestore(username, database, host string, port int, file, password stri
 }
 
 // RunPsql Executes a command using psql
-func RunPsql(username, database, host string, port int, file, password string) error {
+func RunPsql(psqlDir, username, database, host string, port int, file, password string) error {
 	args := append(psqlArgs(username, database, host, port), "-f", file)
-	fmt.Println("Running", "psql", args)
-	cmd := exec.Command("psql", args...)
+	fmt.Println("Running", command(psqlDir, "psql"), args)
+	cmd := exec.Command(command(psqlDir, "psql"), args...)
 	// cmd.Dir = db.Source.GetDir()
 	cmd.Env = append(os.Environ(), fmt.Sprintf("PGPASSWORD=%s", password))
 	// appLogger.Info("Running restore via psql.",
@@ -123,6 +124,14 @@ func psqlArgs(username, database, host string, port int) []string {
 	}
 
 	return args
+}
+
+// command Returns command with base directory if provided or just the command name
+func command(dir, commandName string) string {
+	if dir == "" {
+		return commandName
+	}
+	return path.join(dir, commandName)
 }
 
 // DropAndRestoreUsingPsql Creates a command-line to drop a database and restore via Psql
