@@ -59,11 +59,11 @@ func Validate(cfg Config) error {
 	}
 
 	if cfg.Servers == nil || len(cfg.Servers) < 1 {
-		return errors.New("Please specify atleast one server under 'server' must be specified")
+		return errors.New("Please specify at least one server under 'servers'")
 	}
 
 	if cfg.Databases == nil || len(cfg.Databases) < 1 {
-		return errors.New("Please specify atleast one database under 'databases' must be specified")
+		return errors.New("Please specify at least one database under 'databases'")
 	}
 	for idx, d := range cfg.Databases {
 		if d.Name == "" {
