@@ -4,11 +4,11 @@ PG Reloaded
 `pg_reloaded` is a simple command-line tool to help developers restore PostgreSQL databases 
 periodically. It's useful for restoring databases used for online demos where you
 want to reset the demo data after users have played with your system and also
-for local development where you can schedule your databases to be restored from a dump. 
+for local development where you can schedule your databases to be restored from a backup. 
 
 ## Installation
 
-Currently, you will have to build it from source, binary Releases will be made available soon;
+Currently, you will have to build it from source, binary Releases will be made available soon.
 
 ## Usage
 
@@ -50,13 +50,13 @@ PG Reloaded is configured via YAML configuration file which records the details
 about how and when to restore your databases.
 
 By default `pg_reloaded` reads configuration from a file named `pg_reloaded.yml`
-in the current directory or from file `$HOME/pg_reloaded.yml`
-(on Windows in `%UserProfile%\pg_reloaded.yml`) if present
+in the home directory if present i.e. `$HOME/pg_reloaded.yml`
+(on Windows in `%UserProfile%\pg_reloaded.yml`)
 
 You can specify a path for the configuration file via the `--config` option
 on the command-line.
 
-The configuration basically looks like the following, add databases:
+The configuration basically looks like the following:
 
 ```yaml
 # Absolute path to the directory containing postgresql client programs
@@ -66,10 +66,9 @@ psql_path: "/path/to/psql-dir"
 # Absolute path to the logfile, will be created if it does not exist
 log_file: "/path/to/logfile"
 servers:
-  # name - A name to identify the server in the "databases" section
-  #        of the configuration
+  # name - A name to identify the server in the "databases" section of the configuration
   - name: "my-development-server"
-    # port - The host for the database
+    # host - The host for the database
     host: "localhost"
     # port - The port for the database
     port: 5432
@@ -107,24 +106,24 @@ databases:
 
 ### Supported notation for Scheduling
 
-The real value of pg_reloaded is in it's ability to restore databases according
+The real value of pg_reloaded is in its ability to restore databases according
 to a schedule. 
 
 The following syntax is supported for scheduling
 
-* Intervals: Simple interval notation is supported. Only for minutes (`m`),
-hours (`h`) and days (`d`).
+* Intervals: Simple interval notation is supported. Only for seconds(`s`), 
+minutes (`m`) and hours (`h`). 
 
-e.g. `@every 10m`, `@every 2h`, `@every 7d`, `@every 30d`
+e.g. `@every 10m`, `@every 2h`, `@weekly`, `@monthly`
 
-* CRON Expression: Most CRON expressions valid [here](http://crontab.guru) are valid
+* CRON Expression: Most CRON expressions valid [here](http://crontab.guru) should be valid
 
 
 ## Prerequisites
 
 * The postgresql client programs must be present on your path or configured in 
 the config file or command-line for `pg_reloaded` to work. In particular the 
-program may to execute `psql`, `pg_restore`, `pg_dump` during it's operation.
+program may need to execute `psql`, `pg_restore` or `pg_dump` during it's operation.
 
 In the YAML file:
 
@@ -155,7 +154,7 @@ be as simple as running `go build`
 ```sh
 $ git clone https://github.com/zikani03/pg_reloaded.git
 $ cd pg_reloaded
-$ go build
+$ go build -o dist/pg_reloaded
 ```
 
 ### Dependencies
