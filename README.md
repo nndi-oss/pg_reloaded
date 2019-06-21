@@ -143,6 +143,15 @@ Currently, the only supported sources are:
 
 * *SQL* via dumped *SQL file* - default source, load dumps/data files from the filesystem
 
+## Docker
+
+You can build Docker images/containers using the [Dockerfile](./Dockerfile).
+At this time, you can pull images from [@gkawamoto's](https://github.com/gkawamoto) Dockerhub:
+
+```
+$ docker pull gkawamoto/pg_reloaded
+```
+
 ## Building from Source
 
 I encourage you to build pg_reloaded from source, if only to get you to try out
