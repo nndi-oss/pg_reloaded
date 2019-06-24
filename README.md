@@ -208,7 +208,7 @@ postload:
 
 * Backup the current database before restoring using pg_dump or [pgclimb](https://github.com/lukasmartinelli/pgclimb)
 * A Windows Service wrapper
-* Add suport for the following sources:
+* Add support for the following sources:
 
   * *csv* : loads data from CSV files, just like you would with [pgfutter](https://github.com/lukasmartinelli/pgfutter)
   * *json*: loads data from JSON files, just like you would with pgfutter
