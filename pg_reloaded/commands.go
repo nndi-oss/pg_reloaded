@@ -3,17 +3,18 @@ package pg_reloaded
 import (
 	"errors"
 	"fmt"
-	"github.com/hashicorp/go-hclog"
 	"os"
 	"os/exec"
 	"path"
+
+	"github.com/hashicorp/go-hclog"
 )
 
 func RunRestoreDatabase(psqlDir, username, database, host string, port int, file, password string) error {
 	if "postgres" == database {
 		return errors.New("Nope, I cannot CREATE the 'postgres' database.")
 	}
-	args := createDatabaseArgs(username, database, host, port) 
+	args := createDatabaseArgs(username, database, host, port)
 	fmt.Println("Running", command(psqlDir, "psql"), args)
 	cmd := exec.Command(command(psqlDir, "psql"), args...)
 	// cmd.Dir = db.Source.GetDir()
@@ -24,7 +25,7 @@ func RunRestoreDatabase(psqlDir, username, database, host string, port int, file
 	output, err := cmd.CombinedOutput()
 	fmt.Println(string(output))
 	if err != nil || !cmd.ProcessState.Success() {
-		hclog.Default().Error("Failed to run 'pg_restore'.",
+		hclog.Default().Error("Failed to run 'psql'.",
 			"error", err,
 			"output", string(output))
 		return err
@@ -37,7 +38,7 @@ func RunDropDatabase(psqlDir, username, database, host string, port int, passwor
 	if "postgres" == database {
 		return errors.New("Nope, I cannot DROP the 'postgres' database.")
 	}
-	args := dropDatabaseArgs(username, database, host, port) 
+	args := dropDatabaseArgs(username, database, host, port)
 	fmt.Println("Running", command(psqlDir, "psql"), args)
 	cmd := exec.Command(command(psqlDir, "psql"), args...)
 
@@ -48,7 +49,7 @@ func RunDropDatabase(psqlDir, username, database, host string, port int, passwor
 	output, err := cmd.CombinedOutput()
 	fmt.Println(string(output))
 	if err != nil || !cmd.ProcessState.Success() {
-		hclog.Default().Error("Failed to run 'pg_restore'.",
+		hclog.Default().Error("Failed to run 'psql'.",
 			"error", err,
 			"output", string(output))
 		return err
