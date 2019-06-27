@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/zikani03/pg_reloaded/pg_reloaded"
 	"os"
+	"strings"
 )
 
 func init() {
@@ -43,6 +44,7 @@ var restoreCmd = &cobra.Command{
 		password := server.Password
 		port := server.Port
 		sourceFile := database.Source.File
+		usePgRestore := strings.ToLower(database.Source.Type) == "tar"
 
 		err := pg_reloaded.RunRestoreDatabase(
 			config.PsqlDir,
@@ -52,6 +54,7 @@ var restoreCmd = &cobra.Command{
 			port,
 			sourceFile,
 			password,
+			usePgRestore,
 		)
 		if err != nil {
 			fmt.Printf("Failed to restore database. Got %v", err)

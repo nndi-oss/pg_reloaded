@@ -3,8 +3,9 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/zikani03/pg_reloaded/pg_reloaded"
 	"github.com/zikani03/pg_reloaded/cron"
+	"github.com/zikani03/pg_reloaded/pg_reloaded"
+	"strings"
 )
 
 var scheduler = cron.New()
@@ -22,10 +23,10 @@ var startCmd = &cobra.Command{
 		if err := createJobsFromConfiguration(scheduler); err != nil {
 			return err
 		}
-		
+
 		scheduler.Start()
 		select {
-			// TODO: handle signals case s := <-signalCh:
+		// TODO: handle signals case s := <-signalCh:
 		case <-shutdownCh:
 			return nil
 		}
@@ -38,6 +39,8 @@ func createJobsFromConfiguration(cronScheduler *cron.Cron) error {
 		server = *config.GetServerByName(db.Server)
 		username := server.Username
 		password := server.Password
+		usePgRestore := strings.ToLower(db.Source.Type) == "tar"
+
 		err := cronScheduler.AddFunc(db.Schedule, func() {
 			if db.Source.Type == "sql" {
 				pg_reloaded.RunDropDatabase(
@@ -56,6 +59,7 @@ func createJobsFromConfiguration(cronScheduler *cron.Cron) error {
 					server.Port,
 					db.Source.File,
 					password,
+					usePgRestore,
 				)
 			}
 			// TODO: create schema first: RunPsql(username, db.Name, server.Host, server.Port, db.Source.File, password)

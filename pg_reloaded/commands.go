@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/go-hclog"
 )
 
-func RunRestoreDatabase(psqlDir, username, database, host string, port int, file, password string) error {
+func RunRestoreDatabase(psqlDir, username, database, host string, port int, file, password string, usePgRestore bool) error {
 	if "postgres" == database {
 		return errors.New("Nope, I cannot CREATE the 'postgres' database.")
 	}
@@ -29,6 +29,10 @@ func RunRestoreDatabase(psqlDir, username, database, host string, port int, file
 			"error", err,
 			"output", string(output))
 		return err
+	}
+
+	if usePgRestore {
+		return RunPgRestore(psqlDir, username, database, host, port, file, password)
 	}
 	return RunPsql(psqlDir, username, database, host, port, file, password)
 }
