@@ -1,10 +1,11 @@
 package cmd
+
 // Generate CRON Tab from the configuration
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/zikani03/pg_reloaded/pg_reloaded"
 	"github.com/zikani03/pg_reloaded/cron"
+	"github.com/zikani03/pg_reloaded/pg_reloaded"
 	"os"
 )
 
@@ -43,10 +44,10 @@ func generateCrontab(args ...string) {
 		cmdStr := pg_reloaded.DropAndRestoreUsingPsql(
 			config.PsqlDir,
 			server.Username,
-			d.Name, 
+			d.Name,
 			server.Host,
-			server.Port, 
-			d.Source.File, 
+			server.Port,
+			d.Source.File,
 			server.Password,
 		)
 

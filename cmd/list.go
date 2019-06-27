@@ -14,7 +14,7 @@ var listCmd = &cobra.Command{
 	Short: "Lists the configured servers and databases",
 	Long:  `Lists the configured servers and databases`,
 	Run: func(cmd *cobra.Command, args []string) {
-		
+
 		fmt.Println("Servers:")
 		fmt.Println("===========================")
 		for _, s := range config.Servers {

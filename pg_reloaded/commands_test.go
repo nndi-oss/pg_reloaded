@@ -46,7 +46,7 @@ func TestPsqlArgs(t *testing.T) {
 		"-d", "test_database",
 	}
 	have := psqlArgs("user", "test_database", "my-host", 5432)
-	
+
 	for idx, val := range want {
 		if have[idx] != val {
 			t.Errorf("TestPsqlArgs want: %s have:%s", val, have[idx])

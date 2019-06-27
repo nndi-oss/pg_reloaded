@@ -3,10 +3,10 @@ package pg_reloaded
 import (
 	"testing"
 )
-	
+
 // TestValidatePsqlPath test validation of psqlDir
 func TestValidatePsqlPath(t *testing.T) {
-	config := Config{ PsqlDir: "non-existent-dir" }
+	config := Config{PsqlDir: "non-existent-dir"}
 
 	want := "The path for Postgresql clients (psql_path) 'non-existent-dir' does not exist or cannot be read"
 	err := Validate(config)
@@ -21,7 +21,7 @@ func TestValidatePsqlPath(t *testing.T) {
 }
 
 func TestValidateServersNil(t *testing.T) {
-	config := Config{ Servers: nil }
+	config := Config{Servers: nil}
 
 	want := "Please specify at least one server under 'servers'"
 	err := Validate(config)
@@ -36,7 +36,7 @@ func TestValidateServersNil(t *testing.T) {
 }
 
 func TestValidateServersEmpty(t *testing.T) {
-	config := Config{ Servers: []ServerConfig{} }
+	config := Config{Servers: []ServerConfig{}}
 
 	want := "Please specify at least one server under 'servers'"
 	err := Validate(config)
@@ -52,10 +52,10 @@ func TestValidateServersEmpty(t *testing.T) {
 
 func TestValidateDatabasesNil(t *testing.T) {
 	config := Config{
-		Servers: []ServerConfig {
-			ServerConfig {
-				Host: "localhost",
-				Port: 5432,
+		Servers: []ServerConfig{
+			ServerConfig{
+				Host:     "localhost",
+				Port:     5432,
 				Username: "user",
 				Password: "password",
 			},
@@ -77,10 +77,10 @@ func TestValidateDatabasesNil(t *testing.T) {
 
 func TestValidateDatabasesEmpty(t *testing.T) {
 	config := Config{
-		Servers: []ServerConfig {
-			ServerConfig {
-				Host: "localhost",
-				Port: 5432,
+		Servers: []ServerConfig{
+			ServerConfig{
+				Host:     "localhost",
+				Port:     5432,
 				Username: "user",
 				Password: "password",
 			},
@@ -102,16 +102,16 @@ func TestValidateDatabasesEmpty(t *testing.T) {
 
 func TestValidateDatabasesEmptyName(t *testing.T) {
 	config := Config{
-		Servers: []ServerConfig {
-			ServerConfig {
-				Host: "localhost",
-				Port: 5432,
+		Servers: []ServerConfig{
+			ServerConfig{
+				Host:     "localhost",
+				Port:     5432,
 				Username: "user",
 				Password: "password",
 			},
 		},
 		Databases: []DatabaseConfig{
-			DatabaseConfig {
+			DatabaseConfig{
 				Name: "",
 			},
 		},
@@ -131,18 +131,18 @@ func TestValidateDatabasesEmptyName(t *testing.T) {
 
 func TestValidateDatabasesEmptyServer(t *testing.T) {
 	config := Config{
-		Servers: []ServerConfig {
-			ServerConfig {
-				Name: "local",
-				Host: "localhost",
-				Port: 5432,
+		Servers: []ServerConfig{
+			ServerConfig{
+				Name:     "local",
+				Host:     "localhost",
+				Port:     5432,
 				Username: "user",
 				Password: "password",
 			},
 		},
 		Databases: []DatabaseConfig{
-			DatabaseConfig {
-				Name: "dev",
+			DatabaseConfig{
+				Name:   "dev",
 				Server: "",
 			},
 		},
@@ -162,18 +162,18 @@ func TestValidateDatabasesEmptyServer(t *testing.T) {
 
 func TestValidateDatabasesInvalidServer(t *testing.T) {
 	config := Config{
-		Servers: []ServerConfig {
-			ServerConfig {
-				Name: "local",
-				Host: "localhost",
-				Port: 5432,
+		Servers: []ServerConfig{
+			ServerConfig{
+				Name:     "local",
+				Host:     "localhost",
+				Port:     5432,
 				Username: "user",
 				Password: "password",
 			},
 		},
 		Databases: []DatabaseConfig{
-			DatabaseConfig {
-				Name: "dev",
+			DatabaseConfig{
+				Name:   "dev",
 				Server: "localhost",
 			},
 		},
@@ -193,19 +193,19 @@ func TestValidateDatabasesInvalidServer(t *testing.T) {
 
 func TestValidateDatabasesEmptySchedule(t *testing.T) {
 	config := Config{
-		Servers: []ServerConfig {
-			ServerConfig {
-				Name: "local",
-				Host: "localhost",
-				Port: 5432,
+		Servers: []ServerConfig{
+			ServerConfig{
+				Name:     "local",
+				Host:     "localhost",
+				Port:     5432,
 				Username: "user",
 				Password: "password",
 			},
 		},
 		Databases: []DatabaseConfig{
-			DatabaseConfig {
-				Name: "dev",
-				Server: "local",
+			DatabaseConfig{
+				Name:     "dev",
+				Server:   "local",
 				Schedule: "",
 			},
 		},
@@ -225,21 +225,21 @@ func TestValidateDatabasesEmptySchedule(t *testing.T) {
 
 func TestValidateDatabasesInvalidSourceType(t *testing.T) {
 	config := Config{
-		Servers: []ServerConfig {
-			ServerConfig {
-				Name: "local",
-				Host: "localhost",
-				Port: 5432,
+		Servers: []ServerConfig{
+			ServerConfig{
+				Name:     "local",
+				Host:     "localhost",
+				Port:     5432,
 				Username: "user",
 				Password: "password",
 			},
 		},
 		Databases: []DatabaseConfig{
-			DatabaseConfig {
-				Name: "dev",
-				Server: "local",
+			DatabaseConfig{
+				Name:     "dev",
+				Server:   "local",
 				Schedule: "@every 4h",
-				Source: SourceConfig {
+				Source: SourceConfig{
 					Type: "invalid",
 				},
 			},
@@ -260,21 +260,21 @@ func TestValidateDatabasesInvalidSourceType(t *testing.T) {
 
 func TestValidateDatabasesInvalidSourceFile(t *testing.T) {
 	config := Config{
-		Servers: []ServerConfig {
-			ServerConfig {
-				Name: "local",
-				Host: "localhost",
-				Port: 5432,
+		Servers: []ServerConfig{
+			ServerConfig{
+				Name:     "local",
+				Host:     "localhost",
+				Port:     5432,
 				Username: "user",
 				Password: "password",
 			},
 		},
 		Databases: []DatabaseConfig{
-			DatabaseConfig {
-				Name: "dev",
-				Server: "local",
+			DatabaseConfig{
+				Name:     "dev",
+				Server:   "local",
 				Schedule: "@every 24h",
-				Source: SourceConfig {
+				Source: SourceConfig{
 					Type: "sql",
 					File: "non-existent-file",
 				},
