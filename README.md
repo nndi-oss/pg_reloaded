@@ -1,10 +1,7 @@
 PG Reloaded
 ===
 
-`pg_reloaded` is a simple command-line tool to help developers restore PostgreSQL databases 
-periodically. It's useful for restoring databases used for online demos where you
-want to reset the demo data after users have played with your system and also
-for local development where you can schedule your databases to be restored from a backup. 
+`pg_reloaded` is a program that's useful for restoring databases. You can use it to refresh databases for online demos, development databases and anywhere where you may want to reset the data after use. You schedule your databases to be restored from a backup. 
 
 ## Installation
 
