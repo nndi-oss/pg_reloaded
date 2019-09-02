@@ -1,0 +1,319 @@
+openapi: 3.0.0
+info:
+  title: "PG Reloaded Control Plane API"
+  description: "An API to control a PG Reloaded instance"
+  version: 0.1.0
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+paths:
+  /environment:
+    get:
+      operationId: GetEnvironment
+      summary: Get the environment variables for running pg_reloaded
+      tags:
+        - system
+      responses:
+        '200':
+          description: Environment variables
+  /servers:
+    get:
+      summary: Get all registered servers
+      operationId: GetAllServers
+      responses:
+        '200':
+          description: servers response
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Server'
+    post:
+      summary: Register a server on pg_reloaded
+      operationId: RegisterServer
+      requestBody:
+        description: Server to add to the configuration
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Server'
+      responses:
+        '201':
+          description: server registered
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Server'
+  /servers/{name}:
+    get:
+      summary: Get server with specified name, name is case sensitive
+      operationId: GetServer
+      parameters:
+        - name: name
+          in: path
+          description: Name of Server to fetch
+          required: true
+          schema:
+            type: string
+            # format: underscore-lowercase
+      responses:
+        '201':
+          description: server registered
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Server'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update server configuration
+      operationId: UpdateServer
+      responses:
+        '200':
+          description: server updated
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Server'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Remove the server with the given name
+      operationId: DeleteServer
+      responses:
+        '200':
+          description: serer deleted response
+  /servers/{name}/password:
+    patch:
+      summary: Change the password associated with a server with the given name
+      operationId: UpdateServerPassword
+      requestBody:
+        description: Password for the server configuration
+        required: true
+        content:
+          text/plain:
+            schema:
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+      responses:
+        '200':
+          description: password changed
+  /databases:
+    get:
+      summary: Fetch all databases
+      operationId: FetchAllDatabases
+      responses:
+        '200':
+          description: All databases
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Databases'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Register Database
+      operationId: RegisterDatabase
+      responses:
+        '201':
+          description: Database registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Database'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /databases/{name}:
+    get:
+      summary: Fetch database with specified name
+      operationId: FetchDatabase
+      responses:
+        '200':
+          description: Database fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Database'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update Database configuration
+      operationId: UpdateDatabaseConfig
+      responses:
+        '200':
+          description: Database updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Database'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Remove database from configuraiton
+      operationId: UnregisterDatabase
+      responses:
+        '200':
+          description: Database unregistered
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /databases/{name}/files:
+    post:
+      summary: Upload files to use for database restoration
+      operationId: UploadFiles
+      responses:
+        '200':
+          description: Files uploaded
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+        default:
+          description: unexpected error uploading files
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /databases/{name}/restoration:
+    post:
+      summary: Perform restoration on database immediately
+      operationId: RestoreDatabaseNow
+      responses:
+        '201':
+          description: Operation started
+          content:
+            application/json:
+                schema:
+                  properties:
+                    message:
+                      type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'    
+  /logs:
+    get:
+      summary: get logs
+      operationId: get logs from program
+      responses:
+        '200':
+          description: tail from the logs
+          content:
+              text/plain:
+                schema:
+                  properties:
+                    logline:
+                      type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+    Server:
+      type: object
+      required:
+        - name
+        - host
+        - port
+        - username
+      properties:
+        name:
+          type: string
+        host:
+          type: string
+        port:
+          type: integer
+        username:
+          type: string
+        password:
+          type: string
+    Servers:
+      type: array
+      items:
+        $ref: '#/components/schemas/Server'
+    Database:
+      type: object
+      required:
+        - name
+        - server
+        - schedule
+        - source
+      properties:
+        name:
+          type: string
+        server:
+          type: string
+        schedule:
+          type: string
+        source:
+          type: '#/components/schemas/Source'
+    Databases:
+      type: array
+      items:
+        $ref: '#/components/schemas/Database'
+    Source:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+        file:
+          type: string
+        schema:
+          type: integer
+        files:
+          type: array
+          items:
+            type: string
+            format: File path
