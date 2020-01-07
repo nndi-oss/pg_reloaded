@@ -296,7 +296,7 @@ components:
         schedule:
           type: string
         source:
-          type: '#/components/schemas/Source'
+          $ref: '#/components/schemas/Source'
     Databases:
       type: array
       items:
