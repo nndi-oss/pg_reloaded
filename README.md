@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.svg" alt="PG Reloaded logo" >
+</p>
+
 PG Reloaded
 ===
 
@@ -223,4 +227,4 @@ MIT License
 
 ---
 
-Copyright (c) 2019, Zikani Nyirenda Mwase
+Copyright (c) 2019 - 2020, NNDI 
