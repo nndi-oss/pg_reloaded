@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.svg" alt="PG Reloaded logo" >
+  <img src="logo.svg" alt="PG Reloaded logo" height="128px" >
 </p>
 
 PG Reloaded
