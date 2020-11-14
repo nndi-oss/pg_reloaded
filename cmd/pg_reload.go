@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/hashicorp/go-hclog"
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/nndi-oss/pg_reloaded/pg_reloaded"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/zikani03/pg_reloaded/pg_reloaded"
 	"os"
 	"path"
 )
@@ -73,7 +73,7 @@ var rootCmd = &cobra.Command{
 	Short: "PG Reloaded is a tool for restoring postgresql databases periodically",
 	Long: `PG Reloaded is a tool for restoring postgresql databases periodically
 		    for use for development and demo databases.
-			More info: https://github.com/zikani03/pg_reloaded`,
+			More info: https://github.com/nndi-oss/pg_reloaded`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := pg_reloaded.Validate(*config); err != nil {
 			fmt.Println(err)

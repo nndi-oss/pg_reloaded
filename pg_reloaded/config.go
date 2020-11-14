@@ -3,10 +3,11 @@ package pg_reloaded
 import (
 	"errors"
 	"fmt"
-	"github.com/zikani03/pg_reloaded/cron"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/nndi-oss/pg_reloaded/cron"
 )
 
 // Config stores all the configuration information for pg_reloaded

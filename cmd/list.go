@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +24,7 @@ var listCmd = &cobra.Command{
 			fmt.Println("Port: ", s.Port)
 			fmt.Println("Username: ", s.Username)
 		}
-		fmt.Println("\n")
+		fmt.Println("")
 		fmt.Println("Databases:")
 		fmt.Println("===========================")
 		for _, d := range config.Databases {

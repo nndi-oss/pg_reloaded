@@ -3,9 +3,9 @@ package cmd
 // Generate CRON Tab from the configuration
 import (
 	"fmt"
+	"github.com/nndi-oss/pg_reloaded/cron"
+	"github.com/nndi-oss/pg_reloaded/pg_reloaded"
 	"github.com/spf13/cobra"
-	"github.com/zikani03/pg_reloaded/cron"
-	"github.com/zikani03/pg_reloaded/pg_reloaded"
 	"os"
 )
 

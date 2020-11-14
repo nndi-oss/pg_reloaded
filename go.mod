@@ -1,4 +1,6 @@
-module github.com/zikani03/pg_reloaded
+module github.com/nndi-oss/pg_reloaded
+
+go 1.14
 
 require (
 	github.com/google/pprof v0.0.0-20190515194954-54271f7e092f // indirect

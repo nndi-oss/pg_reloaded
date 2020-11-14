@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/nndi-oss/pg_reloaded/cron"
+	"github.com/nndi-oss/pg_reloaded/pg_reloaded"
 	"github.com/spf13/cobra"
-	"github.com/zikani03/pg_reloaded/pg_reloaded"
-	"github.com/zikani03/pg_reloaded/cron"
 )
 
 var scheduler = cron.New()
@@ -22,10 +22,10 @@ var startCmd = &cobra.Command{
 		if err := createJobsFromConfiguration(scheduler); err != nil {
 			return err
 		}
-		
+
 		scheduler.Start()
 		select {
-			// TODO: handle signals case s := <-signalCh:
+		// TODO: handle signals case s := <-signalCh:
 		case <-shutdownCh:
 			return nil
 		}

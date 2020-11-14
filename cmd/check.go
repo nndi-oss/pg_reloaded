@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
-	"github.com/zikani03/pg_reloaded/pg_reloaded"
 	"os"
+
+	"github.com/nndi-oss/pg_reloaded/pg_reloaded"
+	"github.com/spf13/cobra"
 )
 
 func init() {
