@@ -162,7 +162,7 @@ The next step is to clone the repo and then after that, building the binary _sho
 be as simple as running `go build`
 
 ```sh
-$ git clone https://github.com/zikani03/pg_reloaded.git
+$ git clone https://github.com/nndi-oss/pg_reloaded.git
 $ cd pg_reloaded
 $ go build -o dist/pg_reloaded
 ```
