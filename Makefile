@@ -1,8 +1,9 @@
 -include .env
-VERSION=dev
+MODIFIER=-master
 DOCKERCMD=docker
 DOCKERBUILD=$(DOCKERCMD) build .
 DOCKERPUSH=$(DOCKERCMD) push
+DOCKERTAG=$(DOCKERCMD) tag
 
 GOCMD=go
 BINARY=./dist/pg_reloaded
@@ -14,12 +15,16 @@ deps:
 	$(GOCMD) list -m all
 
 docker:
-	for i in 9.2 9.3 9.4 9.5 9.6 10.0 10.1 10.2 10.3 10.4 10.5 10.6 10.7 10.8 11.0 11.1 11.2 11.3; \
+	COMMIT=$$(git rev-parse --short HEAD); \
+	for i in 9.2 9.3 9.4 9.5 9.6 10 11 12 13 14; \
 	do \
-		$(DOCKERBUILD) --build-arg IMAGE=postgres:$$i-alpine -t gkawamoto/pg_reloaded:$$i-$(VERSION)-alpine; \
+		$(DOCKERBUILD) --build-arg IMAGE=postgres:$$i-alpine -t gkawamoto/pg_reloaded:$$i$(MODIFIER)-alpine; \
+		$(DOCKERTAG) gkawamoto/pg_reloaded:$$i$(MODIFIER)-alpine gkawamoto/pg_reloaded:$$COMMIT-$$i$(MODIFIER)-alpine; \
 	done
 docker-publish: docker
-	for i in 9.2 9.3 9.4 9.5 9.6 10.0 10.1 10.2 10.3 10.4 10.5 10.6 10.7 10.8 11.0 11.1 11.2 11.3; \
+	COMMIT=$$(git rev-parse --short HEAD); \
+	for i in 9.2 9.3 9.4 9.5 9.6 10 11 12 13 14; \
 	do \
-		$(DOCKERPUSH) gkawamoto/pg_reloaded:$$i-$(VERSION)-alpine; \
+		$(DOCKERPUSH) gkawamoto/pg_reloaded:$$i$(MODIFIER)-alpine; \
+		$(DOCKERPUSH) gkawamoto/pg_reloaded:$$COMMIT-$$i$(MODIFIER)-alpine; \
 	done
